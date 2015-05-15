@@ -1,0 +1,20 @@
+doctype html
+html
+    head
+        meta(charset="utf-8")
+        title 演示: 页面压缩保存后还原
+        link(rel="stylesheet" href="../../src/page/index.css")
+    body
+        div.everything
+            iframe.old(src="http://www.12306.cn/mormhweb/")
+            iframe.new
+
+        script(src="../../bower_components/requirejs/require.js")
+        script(src="../../src/page/config.js")
+        script.
+            require(['underscore', 'demo/deconstruct/index'], function (_, index) {
+                index.init()
+            })
+
+
+
