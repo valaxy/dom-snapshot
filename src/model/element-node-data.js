@@ -59,13 +59,17 @@ define(function (require) {
 		}, 'text')
 	}
 
+	/** Transform to protobuf and return the serialization string
+	 */
 	ElementNodeData.prototype.toProtobuf = function () {
 		var model = new protobuf.NodeData(this._toProtobufJSON())
 		return model.encode().toBase64()
 	}
 
-	ElementNodeData.fromProtobuf = function (data) {
-		var encode = ByteBuffer.fromBase64(data)
+	/** Build from protobuf serialization string
+	 */
+	ElementNodeData.fromProtobuf = function (protobufData) {
+		var encode = ByteBuffer.fromBase64(protobufData)
 		var protoModel = protobuf.NodeData.decode(encode)
 		return this._fromProtobufModel(protoModel)
 	}
