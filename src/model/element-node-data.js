@@ -13,6 +13,7 @@ define(function (require) {
 		this.tagName = options.tagName                              // tag name
 		this.css = options.css                                      // computed css
 		this.attributes = options.attributes                        // key-value of attribute nodes
+		this.vom = options.vom
 		if (options.children) {
 			for (var i in options.children) {
 				this.addChildLast(options.children[i])              // children dom
@@ -33,19 +34,19 @@ define(function (require) {
 			var key = keyValue[0]
 			var value = keyValue[1]
 			return {
-				key: key,
+				key  : key,
 				value: value
 			}
 		})
 		return {
-			id: this.id,
+			id         : this.id,
 			elementData: {
-				tagName: this.tagName,
-				css: this.css,
+				tagName   : this.tagName,
+				css       : this.css,
 				attributes: attributes,
-				children: children
+				children  : children
 			},
-			textData: null
+			textData   : null
 		}
 	}
 
@@ -99,11 +100,11 @@ define(function (require) {
 
 		// then create the model
 		var model = new ElementNodeData({
-			id: proto.id,
-			tagName: proto.elementData.tagName,
-			css: css,
+			id        : proto.id,
+			tagName   : proto.elementData.tagName,
+			css       : css,
 			attributes: attrs,
-			children: children
+			children  : children
 		})
 		return model
 	}

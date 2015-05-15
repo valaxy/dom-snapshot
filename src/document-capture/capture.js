@@ -39,7 +39,11 @@ define(function (require) {
 				id        : g.generate(),
 				tagName   : elementDomNode.tagName,
 				css       : getCss(elementDomNode),
-				attributes: getAttributes(elementDomNode)
+				attributes: getAttributes(elementDomNode),
+				vom       : {
+					offsetLeft: elementDomNode.offsetLeft,
+					offsetTop : elementDomNode.offsetTop
+				}
 			})
 		}
 	}
