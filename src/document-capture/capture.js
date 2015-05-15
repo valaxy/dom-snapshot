@@ -34,7 +34,7 @@ define(function (require) {
 
 	var createElementNodeData = function (elementDomNode, g) {
 		return {
-			domNode: elementDomNode,
+			domNode: elementDomNode, // is a DOM Element Node
 			data   : new ElementNodeData({
 				id        : g.generate(),
 				tagName   : elementDomNode.tagName,
@@ -47,7 +47,7 @@ define(function (require) {
 
 	var createTextNodeData = function (textDomNode, g) {
 		return {
-			domNode: textDomNode,
+			domNode: textDomNode, // is a DOM Text Node
 			data   : new TextNodeData({
 				id  : g.generate(),
 				text: textDomNode.textContent
@@ -67,25 +67,28 @@ define(function (require) {
 
 
 	// search 可以重构
-	var grab = function (document) {
+	var capture = function (document) {
 		var g = new IdGenerator() // used to create ID
-		var root = createElementNodeData(document.getElementsByTagName('body')[0], g) // TODO: always grab begin in 'body'?
+		var rootData = createElementNodeData(document.getElementsByTagName('body')[0], g) // TODO: always grab begin in 'body'?
+
+		// Data: ElementNodeData or TextNodeData
+		// Node: DOM node, ElementNode or TextNode
 
 		deepFirst({
-			initial: root,
-			next   : function (parent, push) {
-				var child = parent.domNode.firstChild
+			initial: rootData,
+			next   : function (parentData, push) {
+				var childNode = parentData.domNode.firstChild
 				while (true) {
-					if (child) {
-						if (child.nodeType == Node.ELEMENT_NODE && elementFilter(child)) { // Element Node
-							var element = createElementNodeData(child, g)
-							parent.data.addChildLast(element.data)
-							push(element)
-						} else if (child.nodeType == Node.TEXT_NODE) { // Text Node
-							var text = createTextNodeData(child, g)
-							parent.data.addChildLast(text.data)
+					if (childNode) {
+						if (childNode.nodeType == Node.ELEMENT_NODE && elementFilter(childNode)) { // Element Node
+							var element = createElementNodeData(childNode, g)
+							parentData.data.addChildLast(element.data)
+							push(element) // push for deep searching
+						} else if (childNode.nodeType == Node.TEXT_NODE) { // Text Node
+							var text = createTextNodeData(childNode, g)
+							parentData.data.addChildLast(text.data)
 						}
-						child = child.nextSibling
+						childNode = childNode.nextSibling
 					} else {
 						break
 					}
@@ -93,13 +96,13 @@ define(function (require) {
 			}
 		})
 
-		return root.data
+		return rootData.data // ElementNodeData
 	}
 
 
 	// convenient for test
-	grab._getCss = getCss
-	grab._getAttributes = getAttributes
+	capture._getCss = getCss
+	capture._getAttributes = getAttributes
 
-	return grab
+	return capture
 })

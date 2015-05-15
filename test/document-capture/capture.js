@@ -37,9 +37,9 @@ define(function (require) {
 	})
 
 
-	//QUnit.test('capture()', function (assert) {
-	//	assert.ok(true)
-	//	console.log(capture(document))
-	//})
+	QUnit.test('capture()', function (assert) {
+		assert.ok(true)
+		console.log(capture(document))
+	})
 
 })

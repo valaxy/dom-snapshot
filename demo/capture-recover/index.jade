@@ -6,11 +6,11 @@ html
         link(rel="stylesheet" href="index.css")
     body
         div.everything
-            iframe.old(src="http://www.12306.cn/mormhweb/")
-            iframe.new
+            iframe.old(src="old/index.html")
+            iframe.new(src="new/index.html")
 
         script(src="../../bower_components/requirejs/require.js")
-        script(src="../../base/config.js")
+        script(src="../base/config.js")
         script.
             require(['demo/capture-recover/index'])
 

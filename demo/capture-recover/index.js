@@ -1,19 +1,14 @@
-define(function (require, exports) {
-	var protobuf = require('src/sync/protobuf')
-	var sync = require('src/sync/sync')
-	var SnapshotDom = require('src/model/snapshot-dom')
-	var recover = require('src/document-grab/recover')
+define(function (require) {
+	var protobuf = require('src/model/protobuf')
+	var recover = require('src/document-capture/recover')
+	var capture = require('src/document-capture/capture')
+	var $ = require('jquery')
 
-	exports.init = function () {
-		protobuf.init(function () {
-			sync.grab(function () {
-				//sync.getSnapshotDom('xx', function (data) {
-				//	var frame =
-				//})
+	var $old = $('.old')
+	var $new = $('.new')
 
-				var frame = document.getElementsByClassName('new')[0]
-				frame.src = '../../src/new-page/index.html'
-			})
-		})
-	}
+	var snapshot = capture($old[0].contentWindow.document)
+	recover({
+		root: snapshot
+	}, $new[0].contentWindow.document)
 })
