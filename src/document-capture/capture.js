@@ -5,18 +5,37 @@ define(function (require) {
 	var IdGenerator = require('./id-generator')
 
 
-	// get computed css as a object
+	// get computed style of a element
+	// returns a object
+	// key is the css property(naming as camelCase)
+	// value is the css value
 	var getCss = function (element) {
+		// three things in getComputedStyle
+		// - 0: animation-delay, etc...
+		// - alignContent: start, etc...
+		// - parentRule, length, cssText, etc...
 		var declaration = getComputedStyle(element)
 		var css = {}
-		for (var key in declaration) {
-			if (!/\d+/.test(key)                                          // remote repeat rules
-				&& declaration.hasOwnProperty(key)                         // remote prototype property
-				&& ['parentRule', 'length', 'cssText'].indexOf(key) < 0) { // remove no css rule
-				css[key] = declaration[key]
-			}
+		for (var i = 0; i < declaration.length; i++) {
+			var key = normalizeName(declaration[i])
+			css[key] = declaration[key]
 		}
 		return css
+	}
+
+
+	// convert -webkit-filter to webkitFilter
+	var normalizeName = function (name) {
+		var blocks = name.split('-')
+		if (blocks[0] == '') { // head is '-'
+			blocks.splice(0, 1)
+		}
+		var firstName = blocks[0]
+		var lastName = ''
+		for (var i = 1; i < blocks.length; i++) {
+			lastName += blocks[i][0].toUpperCase() + blocks[i].substr(1)
+		}
+		return firstName + lastName
 	}
 
 
@@ -107,6 +126,7 @@ define(function (require) {
 	// convenient for test
 	capture._getCss = getCss
 	capture._getAttributes = getAttributes
+	capture._normalizeName = normalizeName
 
 	return capture
 })

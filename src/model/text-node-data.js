@@ -1,6 +1,11 @@
 define(function (require) {
-	var TreeNode = require('bower_components/algorithm-data-structure/src/tree/ordered/linked-ordered-node')
+	var TreeNode = require('algorithm-data-structure/tree/ordered/linked-ordered-node')
 
+
+	/** options:
+	 **     id:   only one in the whole dom
+	 **     text: text content
+	 */
 	var TextNodeData = function (options) {
 		TreeNode.call(this)
 		this.id = options.id
@@ -11,12 +16,12 @@ define(function (require) {
 	TreeNode.extend(TextNodeData)
 
 
-	// to JSON
+	// to protobuf JSON
 	TextNodeData.prototype._toProtobufJSON = function () {
 		return { // pass it to NodeData
-			id: this.id,
+			id         : this.id,
 			elementData: null,
-			textData: {
+			textData   : {
 				text: this.text
 			}
 		}
@@ -25,7 +30,7 @@ define(function (require) {
 	// from `new model(JSON)`
 	TextNodeData._fromProtobufModel = function (proto) {
 		return new TextNodeData({
-			id: proto.id,
+			id  : proto.id,
 			text: proto.textData.text
 		})
 	}

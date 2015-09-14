@@ -11,7 +11,7 @@ define(function (require) {
 
 		// before
 		var css = capture._getCss(div)
-		assert.equal(_.keys(css).length, 360) // 360 rules, test in 2015/5/15
+		assert.equal(_.keys(css).length, getComputedStyle(document.body).length)
 		assert.equal(css['backgroundColor'], 'rgba(0, 0, 0, 0)')
 
 		// after
@@ -34,6 +34,12 @@ define(function (require) {
 			class: 'c1 c2',
 			data : 'my-data'
 		})
+	})
+
+	QUnit.test('_normalizeName()', function (assert) {
+		assert.equal(capture._normalizeName('-webkit-clip-path'), 'webkitClipPath')
+		assert.equal(capture._normalizeName('top'), 'top')
+		assert.equal(capture._normalizeName('text-align'), 'textAlign')
 	})
 
 

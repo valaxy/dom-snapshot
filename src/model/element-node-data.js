@@ -1,5 +1,5 @@
 define(function (require) {
-	var TreeNode = require('bower_components/algorithm-data-structure/src/tree/ordered/linked-ordered-node')
+	var TreeNode = require('algorithm-data-structure/tree/ordered/linked-ordered-node')
 	var protobuf = require('protobuf')
 	var TextNodeData = require('./text-node-data')
 	var ByteBuffer = require('ByteBuffer')
@@ -7,6 +7,14 @@ define(function (require) {
 	var $ = require('jquery')
 
 
+	/** options:
+	 **     id:         the only identity in dom
+	 **     tagName:    tag name upper case
+	 **     css:        a object, contains the computed style
+	 **     attributes: html attributes
+	 **     vom:        a object
+	 **     children:   a array
+	 */
 	var ElementNodeData = function (options) {
 		TreeNode.call(this)
 		this.id = options.id                                        // identity
