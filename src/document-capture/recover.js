@@ -3,26 +3,24 @@ define(function (require) {
 	var utility = require('./utility')
 
 
-	// it's needed to set the base url, or network requests may break
-	var addBaseTag = function (baseUrl, doc) {
-		var head = doc.getElementsByTagName('head')[0]
+	var addBaseTag = function (baseUrl, doc, head) {
 		var base = doc.createElement('base')
 		base.setAttribute('href', baseUrl)
 		head.appendChild(base)
 	}
 
-	
-	// there must be has a `<link>`
-	var addCss = function (elementData, doc) {
-		doc.head.appendChild(doc.createElement('style')) // add a styleSheets
-		var css = '.' + elementData.id + '{'
+
+	// add styles of node into one <style>
+	var addStyle = function (elementData, style) {
+		var css = '.' + elementData.id + ' {\n'
 		for (var key in elementData.css) {
 			var newKey = utility.normalizeCssProperty(key)
-			css += newKey + ':' + elementData.css[key] + ';\n'
+			css += newKey + ': ' + elementData.css[key] + ';\n'
 		}
 		css += '}\n'
-		doc.styleSheets[0].insertRule(css, 0)
+		style.innerHTML += css
 	}
+
 
 	var addAttributes = function (element, attr) {
 		for (var key in attr) {
@@ -31,8 +29,9 @@ define(function (require) {
 		}
 	}
 
-	var fillElement = function (element, elementData, doc) {
-		addCss(elementData, doc) // inner stylesheet
+
+	var fillElement = function (element, elementData, doc, style) {
+		addStyle(elementData, style) // inner stylesheet
 		addAttributes(element, elementData.attributes)
 
 		// use the `class` to handle identity, must after addAttributes
@@ -41,7 +40,7 @@ define(function (require) {
 		// add child text or element
 		elementData.eachChild(function (childData) {
 			if (childData instanceof ElementNodeData) {
-				var elementChildNode = createElement(childData, doc)
+				var elementChildNode = createElement(childData, doc, style)
 				element.appendChild(elementChildNode)
 			} else { // Text
 				var textNode = doc.createTextNode(childData.text)
@@ -51,22 +50,36 @@ define(function (require) {
 		return element
 	}
 
-	var createElement = function (elementData, doc) {
+	var createElement = function (elementData, doc, style) {
 		var element = doc.createElement(elementData.tagName)
-		fillElement(element, elementData, doc)
+		fillElement(element, elementData, doc, style)
 		return element
 	}
 
 
-	/** Recover the page from snapshot, returns html */
+	/** Recover the page from snapshot, returns html
+	 ** snapshot:
+	 **     root: document root(html tag)
+	 **     url:  base url
+	 */
 	var recover = function (snapshot, doc) {
-		addBaseTag(snapshot.url, doc)
+		var style = doc.createElement('style') // collect styleSheets
 
-		//var body = doc.getElementsByTagName('body')[0] // the body is automatically generated, so just fill it not create it
-		var docRoot = createElement(snapshot.root, doc)
-		fillElement(docRoot, snapshot.root, doc)
-		return docRoot.outerHTML
+		var root = createElement(snapshot.root, doc, style)
+		var head = root.querySelector('head')
+
+		// it's needed to set the base url, or network requests may break
+		snapshot.url && addBaseTag(snapshot.url, doc, head)
+
+		// there always be a <head>
+		head.appendChild(style)
+
+		return root.outerHTML
 	}
+
+
+	// convenient for test
+	recover._addStyle = addStyle
 
 	return recover
 })

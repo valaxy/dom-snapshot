@@ -5,4 +5,5 @@ define(function (require) {
 	require('../document-capture/utility')
 	require('../document-capture/id-generator')
 	require('../document-capture/capture')
+	require('../document-capture/recover')
 })

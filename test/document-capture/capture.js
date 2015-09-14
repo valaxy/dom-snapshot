@@ -2,6 +2,7 @@ define(function (require) {
 	var $ = require('jquery')
 	var _ = require('underscore')
 	var capture = require('src/document-capture/capture')
+	var recover = require('src/document-capture/recover')
 	var protobuf = require('src/model/protobuf')
 
 	QUnit.module('capture')
@@ -49,6 +50,7 @@ define(function (require) {
 			console.log(root)
 			console.log('protobufJSON: ' + calcMB(JSON.stringify(root.toProtobufJSON())))
 			console.log('protobufBase64: ' + calcMB(root.toProtobufBase64()))
+			console.log('recover html: ' + calcMB(recover({root: root}, document)))
 
 			assert.ok(true)
 			done()
