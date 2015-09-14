@@ -37,12 +37,6 @@ define(function (require) {
 		})
 	})
 
-	QUnit.test('_normalizeName()', function (assert) {
-		assert.equal(capture._normalizeName('-webkit-clip-path'), 'webkitClipPath')
-		assert.equal(capture._normalizeName('top'), 'top')
-		assert.equal(capture._normalizeName('text-align'), 'textAlign')
-	})
-
 
 	QUnit.test('capture()', function (assert) {
 		var calcMB = function (str) {

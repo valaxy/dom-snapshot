@@ -1,8 +1,9 @@
 define(function (require) {
 	var ElementNodeData = require('../model/element-node-data')
+	var utility = require('./utility')
 
 
-	// it's need to set the base url, or network requests may break
+	// it's needed to set the base url, or network requests may break
 	var addBaseTag = function (baseUrl, doc) {
 		var head = doc.getElementsByTagName('head')[0]
 		var base = doc.createElement('base')
@@ -10,34 +11,13 @@ define(function (require) {
 		head.appendChild(base)
 	}
 
-
-	// zIndex -> z-index
-	var getKey = function (key) {
-		key = key[0].toUpperCase() + key.slice(1)
-		var matches = key.match(/[A-Z][a-z]*/g)
-		var newKey = matches[0]
-		for (var i = 1; i < matches.length; i++) {
-			newKey += '-' + matches[i].toLowerCase()
-		}
-		return newKey
-	}
-
-
-	// webkitMaskColor -> -webkit-mask-color
-	var getKeyHasWebkit = function (key) {
-		if (key.slice(0, 6) == 'webkit') {
-			return '-webkit-' + getKey(key.slice(6))
-		}
-		return getKey(key)
-	}
-
-
+	
 	// there must be has a `<link>`
 	var addCss = function (elementData, doc) {
 		doc.head.appendChild(doc.createElement('style')) // add a styleSheets
 		var css = '.' + elementData.id + '{'
 		for (var key in elementData.css) {
-			var newKey = getKeyHasWebkit(key)
+			var newKey = utility.normalizeCssProperty(key)
 			css += newKey + ':' + elementData.css[key] + ';\n'
 		}
 		css += '}\n'
@@ -56,7 +36,7 @@ define(function (require) {
 		addAttributes(element, elementData.attributes)
 
 		// use the `class` to handle identity, must after addAttributes
-		element.className = element.className + ' ' + elementData.id
+		element.className = (element.className ? element.className + ' ' : '') + elementData.id
 
 		// add child text or element
 		elementData.eachChild(function (childData) {
@@ -78,11 +58,14 @@ define(function (require) {
 	}
 
 
+	/** Recover the page from snapshot, returns html */
 	var recover = function (snapshot, doc) {
 		addBaseTag(snapshot.url, doc)
-		console.log(snapshot.root)
-		var body = doc.getElementsByTagName('body')[0] // the body is automatically generated, so just fill it not create it
-		fillElement(body, snapshot.root, doc)
+
+		//var body = doc.getElementsByTagName('body')[0] // the body is automatically generated, so just fill it not create it
+		var docRoot = createElement(snapshot.root, doc)
+		fillElement(docRoot, snapshot.root, doc)
+		return docRoot.outerHTML
 	}
 
 	return recover

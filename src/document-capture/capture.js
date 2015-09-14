@@ -3,8 +3,10 @@ define(function (require) {
 	var ElementNodeData = require('../model/element-node-data')
 	var TextNodeData = require('../model/text-node-data')
 	var IdGenerator = require('./id-generator')
+	var utility = require('./utility')
 
-	// @日志, 如何获得一个元素所有css的最小集
+
+	// @日志, 如何获得一个元素所有css style的最小集
 	// 在getComputedStyle里面筛选, 用数字作为序号的属性是最小集合, 其他属性有总属性所以会有重复
 
 
@@ -21,25 +23,10 @@ define(function (require) {
 		var declaration = getComputedStyle(element)
 		var css = {}
 		for (var i = 0; i < declaration.length; i++) {
-			var key = normalizeName(declaration[i])
+			var key = utility.antiNormalizeCssProperty(declaration[i])
 			css[key] = declaration[key]
 		}
 		return css
-	}
-
-
-	// convert -webkit-filter to webkitFilter
-	var normalizeName = function (name) {
-		var blocks = name.split('-')
-		if (blocks[0] == '') { // head is '-'
-			blocks.splice(0, 1)
-		}
-		var firstName = blocks[0]
-		var lastName = ''
-		for (var i = 1; i < blocks.length; i++) {
-			lastName += blocks[i][0].toUpperCase() + blocks[i].substr(1)
-		}
-		return firstName + lastName
 	}
 
 
@@ -64,8 +51,10 @@ define(function (require) {
 				css       : getCss(elementDomNode),
 				attributes: getAttributes(elementDomNode),
 				vom       : {
-					offsetLeft: elementDomNode.offsetLeft,
-					offsetTop : elementDomNode.offsetTop
+					offsetLeft  : elementDomNode.offsetLeft,
+					offsetTop   : elementDomNode.offsetTop,
+					offsetWidth : elementDomNode.offsetWidth,
+					offsetHeight: elementDomNode.offsetHeight
 				}
 			})
 		}
@@ -130,7 +119,6 @@ define(function (require) {
 	// convenient for test
 	capture._getCss = getCss
 	capture._getAttributes = getAttributes
-	capture._normalizeName = normalizeName
 
 	return capture
 })

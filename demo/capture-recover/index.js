@@ -8,7 +8,8 @@ define(function (require) {
 	var $new = $('.new')
 
 	var snapshot = capture($old[0].contentWindow.document)
-	recover({
+	var html = recover({
 		root: snapshot
 	}, $new[0].contentWindow.document)
+	console.log(html)
 })
