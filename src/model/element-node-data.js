@@ -1,6 +1,6 @@
 define(function (require) {
 	var TreeNode = require('algorithm-data-structure/tree/ordered/linked-ordered-node')
-	var protobuf = require('protobuf')
+	var protobuf = require('./protobuf')
 	var TextNodeData = require('./text-node-data')
 	var ByteBuffer = require('ByteBuffer')
 	var _ = require('underscore')
@@ -9,11 +9,11 @@ define(function (require) {
 
 	/** options:
 	 **     id:         the only identity in dom
-	 **     tagName:    tag name upper case
+	 **     tagName:    tag name lower case
 	 **     css:        a object, contains the computed style
 	 **     attributes: html attributes
 	 **     vom:        a object
-	 **     children:   a array
+	 **     [children]: a array
 	 */
 	var ElementNodeData = function (options) {
 		TreeNode.call(this)
@@ -32,47 +32,15 @@ define(function (require) {
 	TreeNode.extend(ElementNodeData)
 
 
-	// pass the json to constructor
-	ElementNodeData.prototype._toProtobufJSON = function () {
-		var children = []
-		this.eachChild(function (child) {
-			children.push(child._toProtobufJSON())
-		})
-		var attributes = _.pairs(this.attributes).map(function (keyValue) {
-			var key = keyValue[0]
-			var value = keyValue[1]
-			return {
-				key  : key,
-				value: value
-			}
-		})
-		return {
-			id         : this.id,
-			elementData: {
-				tagName   : this.tagName,
-				css       : this.css,
-				attributes: attributes,
-				children  : children
-			},
-			textData   : null
-		}
-	}
-
 	ElementNodeData.prototype.save = function (done) {
 		var me = this
-		var data = me.toProtobuf()
+		var data = me.toProtobufBase64()
 		$.post('http://127.0.0.1:12345/snapshot', data, function (res) {
 			console.log('save success')
 			done()
 		}, 'text')
 	}
 
-	/** Transform to protobuf and return the serialization string
-	 */
-	ElementNodeData.prototype.toProtobuf = function () {
-		var model = new protobuf.NodeData(this._toProtobufJSON())
-		return model.encode().toBase64()
-	}
 
 	/** Build from protobuf serialization string
 	 */
@@ -120,6 +88,41 @@ define(function (require) {
 		})
 		return model
 	}
+
+
+	/** Convert to pure JSON which can pass to protobuf */
+	ElementNodeData.prototype.toProtobufJSON = function () {
+		var children = []
+		this.eachChild(function (child) {
+			children.push(child.toProtobufJSON())
+		})
+		var attributes = _.pairs(this.attributes).map(function (keyValue) {
+			var key = keyValue[0]
+			var value = keyValue[1]
+			return {
+				key  : key,
+				value: value
+			}
+		})
+		return {
+			id         : this.id,
+			elementData: {
+				tagName   : this.tagName,
+				css       : this.css,
+				attributes: attributes,
+				children  : children
+			},
+			textData   : null
+		}
+	}
+
+
+	/** Convert to protobuf and return the serialization string of base64 */
+	ElementNodeData.prototype.toProtobufBase64 = function () {
+		var model = new protobuf.NodeData(this.toProtobufJSON())
+		return model.encode().toBase64()
+	}
+
 
 	return ElementNodeData
 })

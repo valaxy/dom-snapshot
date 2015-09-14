@@ -2,6 +2,7 @@ define(function (require) {
 	var $ = require('jquery')
 	var _ = require('underscore')
 	var capture = require('src/document-capture/capture')
+	var protobuf = require('src/model/protobuf')
 
 	QUnit.module('capture')
 
@@ -44,8 +45,20 @@ define(function (require) {
 
 
 	QUnit.test('capture()', function (assert) {
-		assert.ok(true)
-		console.log(capture(document))
+		var calcMB = function (str) {
+			return (str.length * 2 / 1024 / 1024).toFixed(2) + 'MB'
+		}
+
+		var done = assert.async()
+		protobuf.init(function () {
+			var root = capture(document)
+			console.log(root)
+			console.log('protobufJSON: ' + calcMB(JSON.stringify(root.toProtobufJSON())))
+			console.log('protobufBase64: ' + calcMB(root.toProtobufBase64()))
+
+			assert.ok(true)
+			done()
+		})
 	})
 
 })

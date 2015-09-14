@@ -20,7 +20,7 @@ define(function (require) {
 					href: '#'
 				}
 			})
-			var model = new protobuf.NodeData(node._toProtobufJSON())
+			var model = new protobuf.NodeData(node.toProtobufJSON())
 			assert.deepEqual({
 				id: model.id,
 				elementData: {

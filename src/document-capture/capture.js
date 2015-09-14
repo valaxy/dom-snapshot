@@ -4,11 +4,15 @@ define(function (require) {
 	var TextNodeData = require('../model/text-node-data')
 	var IdGenerator = require('./id-generator')
 
+	// @日志, 如何获得一个元素所有css的最小集
+	// 在getComputedStyle里面筛选, 用数字作为序号的属性是最小集合, 其他属性有总属性所以会有重复
+
 
 	// get computed style of a element
 	// returns a object
 	// key is the css property(naming as camelCase)
 	// value is the css value
+	// for example, marginBottom: '10px'
 	var getCss = function (element) {
 		// three things in getComputedStyle
 		// - 0: animation-delay, etc...
@@ -51,12 +55,12 @@ define(function (require) {
 	}
 
 
-	var createElementNodeData = function (elementDomNode, g) {
+	var createElementNodeJSON = function (elementDomNode, g) {
 		return {
 			domNode: elementDomNode, // is a DOM Element Node
 			data   : new ElementNodeData({
 				id        : g.generate(),
-				tagName   : elementDomNode.tagName,
+				tagName   : elementDomNode.tagName.toLowerCase(),
 				css       : getCss(elementDomNode),
 				attributes: getAttributes(elementDomNode),
 				vom       : {
@@ -68,7 +72,7 @@ define(function (require) {
 	}
 
 
-	var createTextNodeData = function (textDomNode, g) {
+	var createTextNodeJSON = function (textDomNode, g) {
 		return {
 			domNode: textDomNode, // is a DOM Text Node
 			data   : new TextNodeData({
@@ -79,9 +83,9 @@ define(function (require) {
 	}
 
 
-	// filter element
-	var elementFilter = function (elementDomNode) {
-		if (['SCRIPT'].indexOf(elementDomNode.tagName) >= 0) {
+	// filter element, true is valid, false is invalid
+	var elementFilter = function (dom) {
+		if (['SCRIPT'].indexOf(dom.tagName) >= 0) {
 			return false
 		} else {
 			return true
@@ -92,9 +96,9 @@ define(function (require) {
 	// search 可以重构
 	var capture = function (document) {
 		var g = new IdGenerator() // used to create ID
-		var rootData = createElementNodeData(document.getElementsByTagName('body')[0], g) // TODO: always grab begin in 'body'?
+		var rootData = createElementNodeJSON(document.documentElement, g)
 
-		// Data: ElementNodeData or TextNodeData
+		// Data: ElementNodeJSON or TextNodeJSON
 		// Node: DOM node, ElementNode or TextNode
 
 		deepFirst({
@@ -104,11 +108,11 @@ define(function (require) {
 				while (true) {
 					if (childNode) {
 						if (childNode.nodeType == Node.ELEMENT_NODE && elementFilter(childNode)) { // Element Node
-							var element = createElementNodeData(childNode, g)
+							var element = createElementNodeJSON(childNode, g)
 							parentData.data.addChildLast(element.data)
 							push(element) // push for deep searching
 						} else if (childNode.nodeType == Node.TEXT_NODE) { // Text Node
-							var text = createTextNodeData(childNode, g)
+							var text = createTextNodeJSON(childNode, g)
 							parentData.data.addChildLast(text.data)
 						}
 						childNode = childNode.nextSibling

@@ -17,7 +17,7 @@ define(function (require) {
 
 
 	// to protobuf JSON
-	TextNodeData.prototype._toProtobufJSON = function () {
+	TextNodeData.prototype.toProtobufJSON = function () {
 		return { // pass it to NodeData
 			id         : this.id,
 			elementData: null,

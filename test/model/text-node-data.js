@@ -14,7 +14,7 @@ define(function (require) {
 				id  : 'abc',
 				text: '123'
 			})
-			var protoModel = new protobuf.NodeData(textNode._toProtobufJSON())
+			var protoModel = new protobuf.NodeData(textNode.toProtobufJSON())
 			assert.deepEqual({
 				id         : protoModel.id,
 				elementData: protoModel.elementData,
@@ -41,8 +41,8 @@ define(function (require) {
 				id  : '111',
 				text: 'aaa'
 			})
-			var proto = new protobuf.NodeData(textNode._toProtobufJSON())
-			assert.deepEqual(TextNodeData._fromProtobufModel(proto)._toProtobufJSON(), textNode._toProtobufJSON())
+			var proto = new protobuf.NodeData(textNode.toProtobufJSON())
+			assert.deepEqual(TextNodeData._fromProtobufModel(proto).toProtobufJSON(), textNode.toProtobufJSON())
 			done()
 		})
 	})
