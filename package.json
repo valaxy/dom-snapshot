@@ -1,0 +1,9 @@
+{
+  "name": "dom-snapshot",
+  "version": "0.0.0-dev",
+  "dependencies": {
+    "algorithm-data-structure": "github:valaxy/algorithm-data-structure#8957756469487b4060b965fefb8567399ab5fd81",
+    "algorithm-tree-edit-distance": "github:valaxy/algorithm-tree-edit-distance#c7353e6cf4b04b139600f0c339acad0db7129f9e",
+    "chance": "^1.0.4"
+  }
+}
