@@ -5,5 +5,9 @@
     "algorithm-data-structure": "github:valaxy/algorithm-data-structure#8957756469487b4060b965fefb8567399ab5fd81",
     "algorithm-tree-edit-distance": "github:valaxy/algorithm-tree-edit-distance#c7353e6cf4b04b139600f0c339acad0db7129f9e",
     "chance": "^1.0.4"
+  },
+  "devDependencies": {
+    "cjs": "github:valaxy/cjs#e3fb03abf7ed5e58adf0e54dfec01bf4bf65bd2e",
+    "requirejs": "^2.3.2"
   }
 }

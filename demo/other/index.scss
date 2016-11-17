@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.everything {
+  display: flex;
+  flex-direction: row;
+}
+
+.page-before, .page-after {
+  border: 1px solid #ccc;
+}
+
+.page-before {
+  .add-box {
+    border: 1px solid red;
+  }
+}

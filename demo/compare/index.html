@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>视图view</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="everything">
+        <iframe src="http://www.12306.cn/mormhweb/" class="old"></iframe>
+        <iframe src="../recover/index.html" class="new"></iframe>
+    </div>
+    <script src="../../bower_components/requirejs/require.js"></script>
+    <script src="config.js"></script>
+    <script>require(['bower_components/underscore/underscore', 'demo/compare/index'], function (_, index) {
+        index.init()
+    })</script>
+</body>
+</html>
